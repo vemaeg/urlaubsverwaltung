@@ -3,16 +3,32 @@
 
 ## Urlaubsverwaltung
 
-* [Übersicht](#übersicht)
-    * [Demo System](#demo-system)
-    * [Blog Posts](#blog-posts)
-    * [FAQ](#faq)
-    * [Berechtigungen](#berechtigungen)
-* [Installation](#installation)
-* [Entwicklung](#entwicklung)
-* [Changelog](CHANGELOG.md)
-* [Technologien](#technologien)
-* [Lizenz](#lizenz)
+ * [Demo System](#demo-system)
+ * [Blog Posts](#blog-posts)
+ * [FAQ](#faq)
+ * [Berechtigungen](#berechtigungen)
+ * [REST-Schnittstelle](#rest-schnittstelle)
+ * [Installation](#installation)
+   * [Systemvoraussetzungen](#systemvoraussetzungen)
+   * [Download](#download)
+   * [Starten der Anwendung](#starten-der-anwendung)
+   * [Aufrufen der Anwendung](#aufrufen-der-anwendung)
+   * [Anwendung als Service](#anwendung-als-service)
+   * [Konfigurationsdatei](#konfigurationsdatei)
+   * [Datenbank](#datenbank)
+   * [Produktives Starten der Anwendung](#achtung-produktives-starten-der-anwendung)
+   * [Authentifizierung](#authentifizierung)
+    * [LDAP](#ldap)
+    * [Active Directory](#active-directory)
+    * [Synchronisation der User-Datenbank](#synchronisation-der-user-datenbank)
+   * [Synchronisation mit Kalender](#synchronisation-mit-kalender)
+    * [Konfiguration Microsoft Exchange](#konfiguration-microsoft-exchange)
+    * [Konfiguration Google Calendar](#konfiguration-google-calendar)
+ * [Entwicklung](#entwicklung)
+ * [Support und individuelle Anpassungen](#support-und-individuelle-anpassungen)
+ * [Changelog](CHANGELOG.md)
+ * [Technologien](#technologien)
+ * [Lizenz](#lizenz)
 
 ---
 
@@ -24,11 +40,12 @@ Die Anwendung bietet eine Übersicht über die bestehenden Urlaubsanträge und e
 von Urlaubsanspruch und Anzahl verbleibender Urlaubstage der Mitarbeiter. Zusätzlich können Krankmeldungen erfasst und
 überblickt werden.
 
-![Screenshot Urlaubsverwaltung](http://synyx.de/images/opensource/screen_01.jpg)
+![Screenshot Urlaubsverwaltung](docs/uv-01.png)
+![Screenshot Urlaubsverwaltung](docs/uv-02.png)
 
 #### Demo System
 
-Zum Ausprobieren der Anwendung gibt es ein [Demo System](http://urlaubsverwaltung-demo.synyx.de) mit Testbenutzern für
+Zum Ausprobieren der Anwendung gibt es ein [Demo System](https://urlaubsverwaltung-demo.synyx.de) mit Testbenutzern für
 die unterschiedlichen Rollen:
 
 | Rolle                     | Benutzername  | Passwort | Vorname, Nachname |
@@ -42,11 +59,12 @@ die unterschiedlichen Rollen:
 #### Blog Posts
 
 Weitere Informationen zur Geschichte und Entwicklung der Urlaubsverwaltung findet man im
-[synyx Blog](http://blog.synyx.de):
+[synyx Blog](https://www.synyx.de/blog/):
 
-* [Stand November 2011](http://blog.synyx.de/2011/11/elektronische-urlaubsverwaltung-made-by-youngsters/)
-* [Stand November 2012](http://blog.synyx.de/2012/11/urlaubsverwaltung-was-hat-sich-getan/)
-* [Stand Oktober 2014](http://blog.synyx.de/2014/10/urlaubsverwaltung-goes-mobile/)
+* [Stand November 2011](https://www.synyx.de/blog/elektronische-urlaubsverwaltung-made-by-youngsters/)
+* [Stand November 2012](https://www.synyx.de/blog/urlaubsverwaltung-was-hat-sich-getan/)
+* [Stand Oktober 2014](https://www.synyx.de/blog/urlaubsverwaltung-goes-mobile/)
+* [Stand April 2017](https://synyx.de/blog/urlaubsverwaltung-die-geschichte-eines-open-source-projekts/)
 
 #### FAQ
 
@@ -68,6 +86,11 @@ beantragen/stornieren und Krankmeldungen pflegen
 
 Eine aktive Person kann eine oder mehrere Rollen innehaben.
 
+#### REST-Schnittstelle
+
+Die Urlaubsverwaltung besitzt einen sich selbst beschreibende REST-Schnittstelle.
+Diese kann mit über `/api/` aufgerufen werden, z.Bsp. hier: https://urlaubsverwaltung-demo.synyx.de/api/index.html
+
 ---
 
 ## Installation
@@ -75,7 +98,7 @@ Eine aktive Person kann eine oder mehrere Rollen innehaben.
 Um eine aktuelle Version der Urlaubsverwaltung zu installieren, bitte die folgende Anleitung befolgen.
 
 Falls noch eine ältere Version (< 2.12.0) der Urlaubsverwaltung verwendet hier, können Details zur Installation und
-Konfiguration [hier](INSTALLATION_AS_WAR.md) nachgelesen werden.
+Konfiguration [hier](docs/INSTALLATION_AS_WAR.md) nachgelesen werden.
 
 #### Systemvoraussetzungen
 
@@ -182,6 +205,38 @@ Man kann die automatische Synchronisation aller Benutzer aktivieren indem man in
 
 <pre>uv.security.ldap.sync=true</pre> bzw. <pre>uv.security.activeDirectory.sync=true</pre>
 
+### Synchronisation mit Kalender
+
+Die Urlaubsverwaltung bietet die Möglichkeit alle Urlaube und Krankheitstage mit einem Kalender zu synchronisieren. Dafür werden Microsoft Exchange bzw. Office 356 und Google Calendar unterstützt.
+
+#### Konfiguration Microsoft Exchange
+
+![Einstellungsdialog für Microsoft Exchange als Kalenderanbindung](docs/exchange-calendar-settings.png)
+
+Anhand der zu konfigurierenden Email-Adresse wird per Autodiscovery die dazugehörige Exchange Server Adresse ermittelt, 
+welche für die synchronisation verwendet wird. Wichtig ist, dass der gewünschte Kalender bereits zuvor angelegt wurde.
+
+#### Konfiguration Google Calendar
+![Einstellungsdialog für Google Calendar als Kalenderanbindung](docs/google-calendar-settings.png)
+
+Die Anbindung von Google Calendar basiert auf einem OAuth 2.0 Handshake.
+Sobald alle Konfigurationsfelder wie unten beschrieben für die Synchronisation mit Google Calendar befüllt sind, kann mit dem Button "Zugriff erlauben..." der OAuth 2.0 Handshake durchgeführt werden. Sofern dieser Schritt erfolgreich war und die Synchronisation eingerichtet ist, steht neben dem Button "Verbindung zum Google-Kalender ist hergestellt."
+
+##### Client anlegen
+
+![Anlage eines OAuth 2.0 Clients](docs/google-create-oauth-client.png)
+
+Um einen solchen OAuth 2.0 Handshake durchführen zu können ist es zunächst notwendig die Urlaubsverwaltung als Anwendung bei Google bekannt zu machen.
+Dies geschieht über [APIs und Services](https://console.developers.google.com). Hier muss zunächst ein [Projekt angelegt](https://console.developers.google.com/projectcreate) werden. Sobald das geschehen ist kann die [Calendar API](https://console.developers.google.com/apis/library/calendar-json.googleapis.com/) aktiviert werden. Nach der Aktivierung müssen außerdem [OAuth 2.0 Client Zugangsdaten](https://console.developers.google.com/apis/credentials/oauthclient) erzeugt werden. Direkt nach der Erstellung werden **Client Id** und **Client Secret** angezeigt. Diese müssen dann in den Einstellungen der Urlaubsverwaltung entsprechend hinterlegt werden.
+
+##### Kalender anlegen/konfigurieren
+
+Eine weitere notwendige Information ist die **Kalender ID** welche später zur Synchronisation verwendet wird. Es kann dafür entweder ein bestehender Kalender verwendet werden oder ein [neuer Kalender angelegt](https://calendar.google.com/calendar/r/settings/createcalendar) werden. In Google Calendar kann man dann in den Kalendereinstellungen die **Kalendar ID** finden. Diese muss ebenfalls in der Urlaubsverwaltung gepflegt werden.
+
+##### Basis Url der Urlaubsverwaltung
+
+Damit der OAuth 2.0 Handshake durchgeführt werden kann, ist es außerdem notwendig die Basis URL der Urlaubsverwaltung anzugeben. Diese wäre z. Bsp für das Demo System der Urlaubsverwaltung `https://urlaubsverwaltung-demo.synyx.de`.
+
 ---
 
 ## Entwicklung
@@ -242,7 +297,7 @@ in den `application-dev.properties` auf `false` setzen.
 Die Standardkonfiguration sorgt dafür, dass eine H2 Web Konsole aktiv ist. Diese kann standardmäßig erreicht werden
 unter:
 
-<pre>localhost:11115</pre>
+<pre>localhost:8080/h2-console/</pre>
 
 Die H2 Konfigurationen können in der `application-dev.properties` überschrieben werden.
 
@@ -288,7 +343,13 @@ Oder die Property `auth` in den `application.properties` bzw. in den `applicatio
 
 Wenn man in einer produktions-nahen Umgebung entwickeln oder Probleme nachstellen will, bietet es sich an, die extenen
 Systeme wie die Datenbank oder den LDAP-Server zu virtualisieren. [Hier wird gezeigt, wie man das mit Docker
-tun kann.](UV_WITH_DOCKER.md)
+tun kann.](docs/UV_WITH_DOCKER.md)
+
+---
+
+## Support und individuelle Anpassungen
+
+Wer Support z.B. bei der Installation benötigt oder individuelle Anpassungen der Urlaubsverwaltung beauftragen möchte, kann sich an André Janus (Link: http://www.andre-janus.de/kontakt/) wenden. Man erhält ein unverbindliches Angebot mit einer Aufwands- und Kostenschätzung. Erscheinen die beauftragten Anpassungen für alle Benutzer der Urlaubsverwaltung sinnvoll, werden diese mittels eines Pull Requests in die Hauptversion einfließen. 
 
 ---
 
@@ -300,13 +361,15 @@ Alle Änderungen an der Anwendung werden im Changelog gepflegt: [Changelog](CHAN
 
 ## Technologien
 
-Die Anwendung basiert auf dem [Spring](http://www.springsource.org/) MVC Framework.
-Zur Ermittlung von Feiertagen wird das Framework [Jollyday](http://jollyday.sourceforge.net/) benutzt.
-Das Frontend beinhaltet Elemente von [Bootstrap](http://getbootstrap.com/) gewürzt mit einer Prise
+* Die Anwendung basiert auf dem [Spring](http://www.springsource.org/) MVC Framework.
+* Zur Ermittlung von Feiertagen wird das Framework [Jollyday](http://jollyday.sourceforge.net/) benutzt.
+* Das Frontend beinhaltet Elemente von [Bootstrap](http://getbootstrap.com/) gewürzt mit einer Prise
 [jQuery](http://jquery.com/) und [Font Awesome](http://fontawesome.io/).
-Für die Darstellung der Benutzer Avatare wird [Gravatar](http://de.gravatar.com/) benutzt.
-Zur Synchronisation der Urlaubs- und Krankmeldungstermine mit einem Microsoft Exchange Kalender wird die
+*Für die Darstellung der Benutzer Avatare wird [Gravatar](http://de.gravatar.com/) benutzt.
+* Zur Synchronisation der Urlaubs- und Krankmeldungstermine mit einem Microsoft Exchange Kalender wird die
 [EWS JAVA API](https://github.com/OfficeDev/ews-java-api) genutzt.
+* Zur Synchronisation der Urlaubs- und Krankmeldungstermine mit einem Google Calendar wird der
+[Google API Client](https://github.com/google/google-api-java-client) verwendet.
 
 ## Lizenz
 
@@ -314,4 +377,4 @@ Zur Synchronisation der Urlaubs- und Krankmeldungstermine mit einem Microsoft Ex
 [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Alle Logos, Marken- und Warenzeichen unterliegen **nicht** der Apache License 2.0 und dürfen nur mit schriftlicher
-Genehmigung von [synyx](http://www.synyx.de/) weiterverwendet werden.
+Genehmigung von [synyx](https://www.synyx.de/) weiterverwendet werden.
