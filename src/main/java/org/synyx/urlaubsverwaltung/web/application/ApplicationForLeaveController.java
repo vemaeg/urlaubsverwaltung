@@ -55,7 +55,6 @@ public class ApplicationForLeaveController {
      *
      * @return  waiting applications for leave page
      */
-    @PreAuthorize(SecurityRules.IS_PRIVILEGED_USER)
     @RequestMapping(value = "/application", method = RequestMethod.GET)
     public String showWaiting(Model model) {
 
@@ -91,7 +90,7 @@ public class ApplicationForLeaveController {
             return getApplicationsForLeaveForSecondStageAuthority(user);
         }
 
-        return Collections.<ApplicationForLeave>emptyList();
+        return getApplicationsForLeaveForDepartmentMember(user);
     }
 
 
@@ -130,7 +129,6 @@ public class ApplicationForLeaveController {
 
         return waitingApplications.stream()
             .filter(includeDepartmentApplications(members))
-            .filter(withoutOwnApplications(head))
             .filter(withoutSecondStageAuthorityApplications())
             .map(application -> new ApplicationForLeave(application, calendarService))
             .sorted(dateComparator())
@@ -158,6 +156,18 @@ public class ApplicationForLeaveController {
             .map(application -> new ApplicationForLeave(application, calendarService))
             .sorted(dateComparator())
             .collect(Collectors.toList());
+    }
+
+    private List<ApplicationForLeave> getApplicationsForLeaveForDepartmentMember(Person member) {
+
+        List<Application> waitingApplications = applicationService.getApplicationsForACertainState(
+                ApplicationStatus.WAITING);
+
+        return waitingApplications.stream()
+                .filter(application -> application.getPerson().equals(member))
+                .map(application -> new ApplicationForLeave(application, calendarService))
+                .sorted(dateComparator())
+                .collect(Collectors.toList());
     }
 
     private Predicate<Application> withoutOwnApplications(Person head) {

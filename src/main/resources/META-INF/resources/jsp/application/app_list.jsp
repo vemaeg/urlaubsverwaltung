@@ -54,10 +54,12 @@
 
                           <spring:message code="applications.waiting"/>
 
+                          <sec:authorize access="hasAnyAuthority('OFFICE', 'BOSS', 'DEPARTMENT_HEAD')">
                           <a href="${URL_PREFIX}/application/statistics" class="fa-action pull-right"
                               data-title="<spring:message code="action.applications.statistics"/>">
                             <i class="fa fa-fw fa-bar-chart"></i>
                           </a>
+                          </sec:authorize>
 						  <a href="${URL_PREFIX}/application/vacationoverview" class="fa-action pull-right"
                               data-title="<spring:message code="action.applications.vacation_overview"/>">
                             <i class="fa fa-fw fa-calendar"></i>

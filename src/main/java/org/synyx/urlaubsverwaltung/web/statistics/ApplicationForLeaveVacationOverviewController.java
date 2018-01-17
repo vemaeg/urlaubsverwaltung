@@ -27,14 +27,12 @@ public class ApplicationForLeaveVacationOverviewController {
     @Autowired
     private DepartmentService departmentService;
 
-    @PreAuthorize(SecurityRules.IS_PRIVILEGED_USER)
     @RequestMapping(value = "/vacationoverview", method = RequestMethod.POST)
     public String applicationForLeaveVacationOverview() {
 
         return "redirect:/web/application/vacationoverview";
     }
 
-    @PreAuthorize(SecurityRules.IS_PRIVILEGED_USER)
     @RequestMapping(value = "/vacationoverview", method = RequestMethod.GET)
     public String applicationForLeaveVacationOverview(Model model) {
         Person signedInUser = sessionService.getSignedInUser();
