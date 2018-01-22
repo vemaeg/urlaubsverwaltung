@@ -75,6 +75,8 @@
                                 </button>
                             </div>
 
+                            <div class="form-group">
+                                <a href="https://urlaubpwd.vemaeg.de/index.php">Passwort ändern</a>
                         </form>
 
                     </div>
