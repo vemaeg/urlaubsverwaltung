@@ -13,16 +13,17 @@ import microsoft.exchange.webservices.data.core.service.folder.Folder;
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
 import microsoft.exchange.webservices.data.credential.WebCredentials;
 import microsoft.exchange.webservices.data.property.complex.ItemId;
+import microsoft.exchange.webservices.data.property.complex.time.TimeZoneDefinition;
 import microsoft.exchange.webservices.data.search.FindFoldersResults;
 import microsoft.exchange.webservices.data.search.FolderView;
 
+import microsoft.exchange.webservices.data.util.TimeZoneUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import org.synyx.urlaubsverwaltung.core.mail.MailService;
@@ -34,6 +35,7 @@ import org.synyx.urlaubsverwaltung.core.sync.CalendarNotCreatedException;
 import org.synyx.urlaubsverwaltung.core.sync.providers.CalendarProvider;
 
 import java.util.Optional;
+import java.util.TimeZone;
 
 
 /**
@@ -206,7 +208,11 @@ public class ExchangeCalendarProvider implements CalendarProvider {
 
         appointment.setSubject(absence.getEventSubject());
 
+        TimeZoneDefinition timeZoneDefinition = getSystemTimeZone();
+
+        appointment.setStartTimeZone(timeZoneDefinition);
         appointment.setStart(absence.getStartDate());
+        appointment.setEndTimeZone(timeZoneDefinition);
         appointment.setEnd(absence.getEndDate());
         appointment.setIsAllDayEvent(absence.isAllDay());
         appointment.getRequiredAttendees().add(person.getEmail());
@@ -312,6 +318,20 @@ public class ExchangeCalendarProvider implements CalendarProvider {
         }
     }
 
+    private TimeZoneDefinition getSystemTimeZone() {
+        TimeZoneDefinition timeZoneDefinition = null;
+        try {
+            for (TimeZoneDefinition tz : exchangeService.getServerTimeZones()) {
+                if (tz.getId().equalsIgnoreCase(TimeZoneUtils.getMicrosoftTimeZoneName(TimeZone.getDefault()))) {
+                    timeZoneDefinition = tz;
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            LOG.info("Could not get System Timezone.");
+        }
+        return timeZoneDefinition;
+    }
     private static class RedirectionUrlCallback implements IAutodiscoverRedirectionUrl {
 
         @Override
