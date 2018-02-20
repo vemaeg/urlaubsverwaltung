@@ -330,18 +330,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3" for="address">
-                    <spring:message code="application.data.furtherInformation.address"/>:
-                </label>
-                <div class="col-md-9">
-                    <span id="text-address"></span><spring:message code="action.comment.maxChars"/>
-                    <form:textarea id="address" rows="1" path="address" class="form-control" cssErrorClass="form-control error"
-                                   onkeyup="count(this.value, 'text-address');"
-                                   onkeydown="maxChars(this,200); count(this.value, 'text-address');"/>
-                    <form:errors path="address" cssClass="error"/>
-                </div>
-            </div>
-            <div class="form-group">
                 <label class="control-label col-md-3" for="comment">
                     <spring:message code="application.data.furtherInformation.comment"/>:
                 </label>
