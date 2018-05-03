@@ -76,7 +76,8 @@
                             </div>
 
                             <div class="form-group">
-                                <a href="https://urlaubpwd.vemaeg.de/index.php">Passwort ändern</a>
+                                <a href="https://urlaubpwd.vemaeg.de/index.php">Passwort ändern</a> <a class="pull-right" href="https://urlaubpwd.vemaeg.de/index.php?action=sendtoken">Passwort vergessen</a>
+                            </div>
                         </form>
 
                     </div>
