@@ -132,10 +132,6 @@
                 <spring:message code="application.data.description"/>
             </span>
             <span id="departmentVacations" class="help-block info"></span>
-            <span class="help-block">
-                <i class="fa fa-fw fa-info-circle"></i>
-                <spring:message code="application.data.restBenefits"/>
-            </span>
         </div>
 
         <div class="col-md-8 col-md-pull-4">
@@ -289,7 +285,7 @@
         <div class="col-md-4 col-md-push-8">
             <span class="help-block">
                 <i class="fa fa-fw fa-info-circle"></i>
-                <spring:message code="application.data.hours.description"/>
+                <spring:message code="application.data.restBenefits"/>
             </span>
         </div>
 
