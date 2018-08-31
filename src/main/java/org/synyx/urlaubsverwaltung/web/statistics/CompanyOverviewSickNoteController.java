@@ -203,7 +203,7 @@ public class CompanyOverviewSickNoteController {
                     }
                 }
             }
-            averageSickDays.put(department, totalSickDays.divide(new BigDecimal(department.getMembers().size())));
+            averageSickDays.put(department, totalSickDays.divide(new BigDecimal(department.getMembers().size()), 2, BigDecimal.ROUND_HALF_UP));
         }
 
         model.addAttribute("departments", departments);
