@@ -82,6 +82,15 @@
           </li>
         </sec:authorize>
 
+        <sec:authorize access="hasAnyAuthority('OFFICE', 'DEPARTMENT_HEAD', 'SECOND_STAGE_AUTHORITY')">
+          <li>
+            <a href="${URL_PREFIX}/companyoverview/statistics">
+              <i class="fa fa-fw fa-bar-chart"></i>
+              <spring:message code="nav.statistics.title"/>
+            </a>
+          </li>
+        </sec:authorize>
+
         <sec:authorize access="hasAuthority('OFFICE')">
           <li>
             <a href="${URL_PREFIX}/settings">

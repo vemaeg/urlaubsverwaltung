@@ -170,6 +170,13 @@ public class Department extends AbstractPersistable<Integer> {
         this.secondStageAuthorities = secondStageAuthorities;
     }
 
+    public boolean isPersonDepartmentHead(Person person) {
+        return getDepartmentHeads().contains(person);
+    }
+
+    public boolean isPersonSecondStageAuthority(Person person) {
+        return getSecondStageAuthorities().contains(person);
+    }
 
     @Override
     public String toString() {
