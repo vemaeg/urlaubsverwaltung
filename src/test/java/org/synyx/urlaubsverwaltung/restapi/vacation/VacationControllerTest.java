@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import org.synyx.urlaubsverwaltung.core.account.service.AccountService;
+import org.synyx.urlaubsverwaltung.core.account.service.VacationDaysService;
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
@@ -17,6 +19,7 @@ import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
+import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 import org.synyx.urlaubsverwaltung.restapi.ApiExceptionHandlerControllerAdvice;
 import org.synyx.urlaubsverwaltung.restapi.vacation.VacationController;
 import org.synyx.urlaubsverwaltung.test.TestDataCreator;
@@ -32,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * @author  Aljona Murygina - murygina@synyx.de
+ * @author Aljona Murygina - murygina@synyx.de
  */
 public class VacationControllerTest {
 
@@ -41,6 +44,9 @@ public class VacationControllerTest {
     private PersonService personServiceMock;
     private ApplicationService applicationServiceMock;
     private DepartmentService departmentServiceMock;
+    private AccountService accountServiceMock;
+    private VacationDaysService vacationDaysService;
+    private WorkDaysService workDaysService;
 
     @Before
     public void setUp() {
@@ -48,9 +54,13 @@ public class VacationControllerTest {
         personServiceMock = Mockito.mock(PersonService.class);
         applicationServiceMock = Mockito.mock(ApplicationService.class);
         departmentServiceMock = Mockito.mock(DepartmentService.class);
+        accountServiceMock = Mockito.mock(AccountService.class);
+        vacationDaysService = Mockito.mock(VacationDaysService.class);
+        workDaysService = Mockito.mock(WorkDaysService.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(new VacationController(personServiceMock, applicationServiceMock,
-                        departmentServiceMock)).setControllerAdvice(new ApiExceptionHandlerControllerAdvice()).build();
+                departmentServiceMock, accountServiceMock, vacationDaysService, workDaysService))
+                .setControllerAdvice(new ApiExceptionHandlerControllerAdvice()).build();
     }
 
 
@@ -58,11 +68,11 @@ public class VacationControllerTest {
     public void ensureReturnsAllAllowedVacationsIfNoPersonProvided() throws Exception {
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "2016-12-31"))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         Mockito.verify(applicationServiceMock)
-            .getApplicationsForACertainPeriodAndState(new DateMidnight(2016, 1, 1), new DateMidnight(2016, 12, 31),
-                ApplicationStatus.ALLOWED);
+                .getApplicationsForACertainPeriodAndState(new DateMidnight(2016, 1, 1), new DateMidnight(2016, 12, 31),
+                        ApplicationStatus.ALLOWED);
         Mockito.verifyZeroInteractions(personServiceMock);
     }
 
@@ -76,11 +86,11 @@ public class VacationControllerTest {
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01")
                 .param("to", "2016-12-31")
                 .param("person", "23"))
-            .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
         Mockito.verify(applicationServiceMock)
-            .getApplicationsForACertainPeriodAndPersonAndState(new DateMidnight(2016, 1, 1),
-                new DateMidnight(2016, 12, 31), person, ApplicationStatus.ALLOWED);
+                .getApplicationsForACertainPeriodAndPersonAndState(new DateMidnight(2016, 1, 1),
+                        new DateMidnight(2016, 12, 31), person, ApplicationStatus.ALLOWED);
         Mockito.verify(personServiceMock).getPersonByID(23);
     }
 
@@ -96,19 +106,19 @@ public class VacationControllerTest {
                 new DateMidnight(2016, 4, 5), new DateMidnight(2016, 4, 10), DayLength.FULL);
 
         Mockito.when(applicationServiceMock.getApplicationsForACertainPeriodAndState(Mockito.any(DateMidnight.class),
-                    Mockito.any(DateMidnight.class), Mockito.any(ApplicationStatus.class)))
-            .thenReturn(Arrays.asList(vacation1, vacation2));
+                Mockito.any(DateMidnight.class), Mockito.any(ApplicationStatus.class)))
+                .thenReturn(Arrays.asList(vacation1, vacation2));
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "2016-12-31"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.response").exists())
-            .andExpect(jsonPath("$.response.vacations").exists())
-            .andExpect(jsonPath("$.response.vacations", hasSize(2)))
-            .andExpect(jsonPath("$.response.vacations[0].from", is("2016-05-19")))
-            .andExpect(jsonPath("$.response.vacations[0].to", is("2016-05-20")))
-            .andExpect(jsonPath("$.response.vacations[0].person").exists())
-            .andExpect(jsonPath("$.response.vacations[0].person.ldapName", is("foo")));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.response").exists())
+                .andExpect(jsonPath("$.response.vacations").exists())
+                .andExpect(jsonPath("$.response.vacations", hasSize(2)))
+                .andExpect(jsonPath("$.response.vacations[0].from", is("2016-05-19")))
+                .andExpect(jsonPath("$.response.vacations[0].to", is("2016-05-20")))
+                .andExpect(jsonPath("$.response.vacations[0].person").exists())
+                .andExpect(jsonPath("$.response.vacations[0].person.ldapName", is("foo")));
     }
 
 
@@ -123,7 +133,7 @@ public class VacationControllerTest {
     public void ensureBadRequestForInvalidFromParameter() throws Exception {
 
         mockMvc.perform(get("/api/vacations").param("from", "foo").param("to", "2016-12-31"))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -138,7 +148,7 @@ public class VacationControllerTest {
     public void ensureBadRequestForInvalidToParameter() throws Exception {
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "foo"))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -146,7 +156,7 @@ public class VacationControllerTest {
     public void ensureBadRequestForInvalidPeriod() throws Exception {
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "2015-01-01"))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -154,7 +164,7 @@ public class VacationControllerTest {
     public void ensureBadRequestForInvalidPersonParameter() throws Exception {
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "foo").param("person", "foo"))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 
 
@@ -164,6 +174,6 @@ public class VacationControllerTest {
         Mockito.when(personServiceMock.getPersonByID(Mockito.anyInt())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/vacations").param("from", "2016-01-01").param("to", "foo").param("person", "23"))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 }

@@ -98,6 +98,10 @@
                         </ul>
                     </div>
                     <uv:print/>
+                    <a href="/web/absenceoverview" class="fa-action pull-right"
+                       data-title=<spring:message code = "applications.statistics.year" />>
+                      <i class="fa fa-fw fa-calendar"></i>
+                    </a>
                 </legend>
 
                 <c:choose>
@@ -129,7 +133,7 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${persons}" var="person">
-                    <tr>
+                    <tr onclick = navigate('/web/absenceoverview?person=${person.id}');>
                         <td class="hidden-xs">
                             <c:out value="${person.firstName}"/>
                         </td>

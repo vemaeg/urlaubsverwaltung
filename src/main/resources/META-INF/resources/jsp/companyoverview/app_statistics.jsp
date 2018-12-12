@@ -114,6 +114,10 @@
                         </ul>
                     </div>
                     <uv:print/>
+                    <a href="${URL_PREFIX}/absenceoverview" class="fa-action pull-right"
+                       data-title=<spring:message code = "applications.statistics.year" />>
+                      <i class="fa fa-fw fa-calendar"></i>
+                    </a>
                 </legend>
 
                 <p class="is-inline-block">
@@ -147,7 +151,7 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <table cellspacing="0" class="list-table sortable tablesorter">
+                        <table cellspacing="0" class="list-table selectable-table sortable tablesorter">
                             <thead class="hidden-xs hidden-sm">
                             <tr>
                                 <th class="sortable-field"><spring:message code="person.data.firstName"/></th>
@@ -162,7 +166,7 @@
                             </thead>
                             <tbody>
                             <c:forEach items="${statistics}" var="statistic">
-                                <tr>
+                                <tr onclick = navigate('${URL_PREFIX}/absenceoverview?person=${statistic.person.id}');>
                                     <td class="hidden-xs"><c:out value="${statistic.person.firstName}"/></td>
                                     <td class="hidden-xs"><c:out value="${statistic.person.lastName}"/></td>
                                     <td class="visible-xs hidden-print">

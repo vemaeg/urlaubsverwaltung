@@ -6,8 +6,13 @@
 .vacationOverview-day-public-holiday,
 .vacationOverview-day-weekend {
     color: #FFF;
-    background: #DCDCDC;
+    background: #DCDCDC !important;
 }
+
+.vacationOverview-day-not-in-month {
+     color: #FFF;
+     background: #6F6F6F !important;
+ }
 
 .vacationOverview-legend-colorbox {
     width: 15px;
@@ -19,24 +24,24 @@
 }
 
 .vacationOverview-day-personal-holiday-status-ALLOWED {
-    background: linear-gradient(-56deg, #FFEDA0 50%, #FFEDA0 50%);
+    background: linear-gradient(-56deg, #FFEDA0 50%, #FFEDA0 50%) !important;
 }
 .vacationOverview-day-personal-holiday-status-WAITING {
-    background: linear-gradient(-56deg, #B5D0DF 50%, #B5D0DF 50%);
+    background: linear-gradient(-56deg, #B5D0DF 50%, #B5D0DF 50%) !important;
 }
 .vacationOverview-day-sick-note {
-    background: linear-gradient(-56deg, #FFC5BF 50%, #FFC5BF 50%);
+    background: linear-gradient(-56deg, #FFC5BF 50%, #FFC5BF 50%) !important;
 }
 
 .vacationOverview-day-personal-holiday-half-day-status-ALLOWED {
-    background: linear-gradient(-56deg, #FFEDA0 50%, #FFFFFF 50%);
+    background: linear-gradient(-56deg, #FFEDA0 50%, #FFFFFF 50%) !important;
 }
 .vacationOverview-day-personal-holiday-half-day-status-WAITING {
-    background: linear-gradient(-56deg, #B5D0DF 50%, #FFFFFF 50%);
+    background: linear-gradient(-56deg, #B5D0DF 50%, #FFFFFF 50%) !important;
 }
 
 .vacationOverview-day-sick-note-half-day {
-    background: linear-gradient(-56deg, #FFC5BF 50%, #FFFFFF 50%);
+    background: linear-gradient(-56deg, #FFC5BF 50%, #FFFFFF 50%) !important;
 }
 
 .vactionOverview-day-item {
@@ -63,4 +68,36 @@
 
 .vacationOverview-tbody tbody {
     border: 1px solid #000;
+}
+
+#absenceOverviewTable {
+    font-size: 12px;
+    table-layout: fixed;
+}
+
+.absenceOverview-title {
+    width: 100px;
+}
+
+#absenceOverviewTable td {
+    border: 1px solid #DCDCDC;
+    padding: 8px;
+    text-align: center;
+}
+
+#absenceOverviewTable th {
+    border: 1px solid #DCDCDC;
+    text-align: center;
+}
+
+.absenceOverview-label {
+    font-weight: bold;
+}
+
+.absenceOverview-value {
+    font-weight: normal;
+}
+
+#absenceOverview-container {
+    width: 80%;
 }

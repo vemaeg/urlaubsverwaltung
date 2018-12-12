@@ -17,19 +17,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.synyx.urlaubsverwaltung.core.account.domain.Account;
+import org.synyx.urlaubsverwaltung.core.account.service.AccountService;
+import org.synyx.urlaubsverwaltung.core.account.service.VacationDaysService;
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
+import org.synyx.urlaubsverwaltung.core.holiday.VacationDays;
+import org.synyx.urlaubsverwaltung.core.period.DayLength;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
+import org.synyx.urlaubsverwaltung.core.util.DateUtil;
+import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 import org.synyx.urlaubsverwaltung.restapi.ResponseWrapper;
 import org.synyx.urlaubsverwaltung.restapi.RestApiDateFormat;
 import org.synyx.urlaubsverwaltung.restapi.absence.AbsenceResponse;
+import org.synyx.urlaubsverwaltung.web.person.UnknownPersonException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 
 /**
@@ -43,14 +50,20 @@ public class VacationController {
     private final PersonService personService;
     private final ApplicationService applicationService;
     private final DepartmentService departmentService;
+    private final AccountService accountService;
+    private final VacationDaysService vacationDaysService;
+    private final WorkDaysService calendarService;
 
     @Autowired
     VacationController(PersonService personService, ApplicationService applicationService,
-        DepartmentService departmentService) {
+        DepartmentService departmentService, AccountService accountService, VacationDaysService vacationDaysService, WorkDaysService calendarService) {
 
         this.personService = personService;
         this.applicationService = applicationService;
         this.departmentService = departmentService;
+        this.accountService = accountService;
+        this.vacationDaysService = vacationDaysService;
+        this.calendarService = calendarService;
     }
 
     @ApiOperation(
@@ -108,5 +121,94 @@ public class VacationController {
         List<AbsenceResponse> vacationResponses = Lists.transform(applications, AbsenceResponse::new);
 
         return new ResponseWrapper<>(new VacationListResponse(vacationResponses));
+    }
+
+    @ApiOperation(
+            value = "Get all vacation length for a certain year and person", notes = "Get vacation length for a certain year and person. "
+    )
+    @RequestMapping(value = "/vacations/length", method = RequestMethod.GET)
+    public ResponseWrapper<VacationLengthResponse> vacationLength(
+            @ApiParam(value = "Year", defaultValue = "2016")
+            @RequestParam(value = "year")
+                    Integer year,
+            @ApiParam(value = "ID of the person")
+            @RequestParam(value = "person")
+                    Integer personId) throws UnknownPersonException {
+
+        Map<Integer, VacationDays> vacationDays = new HashMap<>();
+
+        Person person = personService.getPersonByID(personId).orElseThrow(() -> new UnknownPersonException(personId));
+
+        Optional<Account> account = accountService.getHolidaysAccount(year, person);
+
+        BigDecimal vacationDaysLeft = BigDecimal.ZERO;
+        BigDecimal previousYearRestDays = BigDecimal.ZERO;
+        BigDecimal vacationDaysAllowed = BigDecimal.ZERO;
+
+
+        if (account.isPresent()) {
+            vacationDaysLeft = vacationDaysService.calculateTotalLeftVacationDays(account.get());
+            previousYearRestDays = account.get().getRemainingVacationDays();
+            vacationDaysAllowed = account.get().getVacationDays();
+        }
+
+        for (int month = 1; month <= 12; month++) {
+            DateMidnight startDate = DateUtil.getFirstDayOfMonth(year, month);
+            DateMidnight endDate = DateUtil.getLastDayOfMonth(year, month);
+
+            BigDecimal waitingVacationDays = BigDecimal.ZERO;
+            BigDecimal allowedVacationDays = BigDecimal.ZERO;
+
+            List<Application> applications = applicationService.getApplicationsForACertainPeriodAndPerson(startDate, endDate, person);
+
+            for (Application application : applications) {
+                if (application.hasStatus(ApplicationStatus.WAITING)
+                        || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)) {
+                    waitingVacationDays = waitingVacationDays.add(getVacationDays(application, year));
+                } else if (application.hasStatus(ApplicationStatus.ALLOWED)) {
+                    allowedVacationDays = allowedVacationDays.add(getVacationDays(application, year));
+                }
+            }
+            vacationDays.put(month, new VacationDays(waitingVacationDays, allowedVacationDays));
+        }
+        return new ResponseWrapper<>(new VacationLengthResponse(vacationDaysLeft, previousYearRestDays, vacationDaysAllowed, vacationDays, person));
+    }
+
+    private BigDecimal getVacationDays(Application application, Integer relevantYear) {
+
+        int yearOfStartDate = application.getStartDate().getYear();
+        int yearOfEndDate = application.getEndDate().getYear();
+
+        DayLength dayLength = application.getDayLength();
+        Person person = application.getPerson();
+
+        if (yearOfStartDate != yearOfEndDate) {
+            DateMidnight startDate = getStartDateForCalculation(application, relevantYear);
+            DateMidnight endDate = getEndDateForCalculation(application, relevantYear);
+
+            return calendarService.getWorkDays(dayLength, startDate, endDate, person);
+        }
+
+        return calendarService.getWorkDays(dayLength, application.getStartDate(), application.getEndDate(), person);
+    }
+
+
+    private DateMidnight getStartDateForCalculation(Application application, int relevantYear) {
+
+        if (application.getStartDate().getYear() != relevantYear) {
+            return DateUtil.getFirstDayOfYear(application.getEndDate().getYear());
+        }
+
+        return application.getStartDate();
+    }
+
+
+    private DateMidnight getEndDateForCalculation(Application application, int relevantYear) {
+
+        if (application.getEndDate().getYear() != relevantYear) {
+            return DateUtil.getLastDayOfYear(application.getStartDate().getYear());
+        }
+
+        return application.getEndDate();
     }
 }
