@@ -79,15 +79,38 @@ public class SickDaysController {
         List<SickNote> sickNotes = sickNoteService.getByPersonAndPeriod(person, startDate, endDate);
 
         for(SickNote sickNote: sickNotes) {
-            BigDecimal workDays = calendarService.getWorkDays(sickNote.getDayLength(), sickNote.getStartDate(),
-                    sickNote.getEndDate(), person);
+            DateMidnight relevantAubStartDate;
+            DateMidnight relevantAubEndDate;
+
+            DateMidnight relevantStartDate = sickNote.getStartDate();
+            DateMidnight relevantEndDate = sickNote.getEndDate();
+
+            if (sickNote.getStartDate().isBefore(startDate)) {
+                relevantStartDate = startDate;
+            }
+            if (sickNote.getEndDate().isAfter(endDate)) {
+                relevantEndDate = endDate;
+            }
+
+            BigDecimal workDays = calendarService.getWorkDays(sickNote.getDayLength(), relevantStartDate,
+                    relevantEndDate, person);
 
             if (sickNote.getSickNoteType().isOfCategory(SickNoteCategory.SICK_NOTE_CHILD)) {
                 childSickDays = childSickDays.add(workDays);
 
                 if (sickNote.isAubPresent()) {
+                     relevantAubStartDate = sickNote.getAubStartDate();
+                     relevantAubEndDate = sickNote.getAubEndDate();
+
+                    if (sickNote.getAubStartDate().isBefore(startDate)) {
+                        relevantAubStartDate = startDate;
+                    }
+
+                    if (sickNote.getAubEndDate().isAfter(endDate)) {
+                        relevantAubEndDate = endDate;
+                    }
                     BigDecimal workDaysWithAUB = calendarService.getWorkDays(sickNote.getDayLength(),
-                            sickNote.getAubStartDate(), sickNote.getAubEndDate(), person);
+                            relevantAubStartDate, relevantAubEndDate, person);
 
                     childSickDaysWithAub = childSickDaysWithAub.add(workDaysWithAUB);
                 }
@@ -95,8 +118,19 @@ public class SickDaysController {
                 sickDays = sickDays.add(workDays);
 
                 if (sickNote.isAubPresent()) {
+                    relevantAubStartDate = sickNote.getAubStartDate();
+                    relevantAubEndDate = sickNote.getAubEndDate();
+
+                    if (sickNote.getAubStartDate().isBefore(startDate)) {
+                        relevantAubStartDate = startDate;
+                    }
+
+                    if (sickNote.getAubEndDate().isAfter(endDate)) {
+                        relevantAubEndDate = endDate;
+                    }
+
                     BigDecimal workDaysWithAUB = calendarService.getWorkDays(sickNote.getDayLength(),
-                            sickNote.getAubStartDate(), sickNote.getAubEndDate(), person);
+                            relevantAubStartDate, relevantAubEndDate, person);
 
                     sickDaysWithAub = sickDaysWithAub.add(workDaysWithAUB);
                 }

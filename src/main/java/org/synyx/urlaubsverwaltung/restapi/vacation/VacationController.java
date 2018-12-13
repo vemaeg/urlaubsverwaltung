@@ -164,9 +164,9 @@ public class VacationController {
             for (Application application : applications) {
                 if (application.hasStatus(ApplicationStatus.WAITING)
                         || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)) {
-                    waitingVacationDays = waitingVacationDays.add(getVacationDays(application, year));
+                    waitingVacationDays = waitingVacationDays.add(getVacationDays(application, year, month));
                 } else if (application.hasStatus(ApplicationStatus.ALLOWED)) {
-                    allowedVacationDays = allowedVacationDays.add(getVacationDays(application, year));
+                    allowedVacationDays = allowedVacationDays.add(getVacationDays(application, year, month));
                 }
             }
             vacationDays.put(month, new VacationDays(waitingVacationDays, allowedVacationDays));
@@ -174,17 +174,20 @@ public class VacationController {
         return new ResponseWrapper<>(new VacationLengthResponse(vacationDaysLeft, previousYearRestDays, vacationDaysAllowed, vacationDays, person));
     }
 
-    private BigDecimal getVacationDays(Application application, Integer relevantYear) {
+    private BigDecimal getVacationDays(Application application, Integer relevantYear, Integer relevantMonth) {
 
         int yearOfStartDate = application.getStartDate().getYear();
         int yearOfEndDate = application.getEndDate().getYear();
 
+        int monthOfStartDate = application.getStartDate().getMonthOfYear();
+        int monthOfEndDate = application.getEndDate().getMonthOfYear();
+
         DayLength dayLength = application.getDayLength();
         Person person = application.getPerson();
 
-        if (yearOfStartDate != yearOfEndDate) {
-            DateMidnight startDate = getStartDateForCalculation(application, relevantYear);
-            DateMidnight endDate = getEndDateForCalculation(application, relevantYear);
+        if (yearOfStartDate != yearOfEndDate || monthOfStartDate != monthOfEndDate) {
+            DateMidnight startDate = getStartDateForCalculation(application, relevantYear, relevantMonth);
+            DateMidnight endDate = getEndDateForCalculation(application, relevantYear, relevantMonth);
 
             return calendarService.getWorkDays(dayLength, startDate, endDate, person);
         }
@@ -193,20 +196,24 @@ public class VacationController {
     }
 
 
-    private DateMidnight getStartDateForCalculation(Application application, int relevantYear) {
+    private DateMidnight getStartDateForCalculation(Application application, int relevantYear, int relevantMonth) {
 
         if (application.getStartDate().getYear() != relevantYear) {
             return DateUtil.getFirstDayOfYear(application.getEndDate().getYear());
+        } else if (application.getStartDate().getMonthOfYear() != relevantMonth) {
+            return DateUtil.getFirstDayOfMonth(relevantYear, relevantMonth);
         }
 
         return application.getStartDate();
     }
 
 
-    private DateMidnight getEndDateForCalculation(Application application, int relevantYear) {
+    private DateMidnight getEndDateForCalculation(Application application, int relevantYear, int relevantMonth) {
 
         if (application.getEndDate().getYear() != relevantYear) {
             return DateUtil.getLastDayOfYear(application.getStartDate().getYear());
+        } else if (application.getEndDate().getMonthOfYear() != relevantMonth) {
+            return DateUtil.getLastDayOfMonth(relevantYear, relevantMonth);
         }
 
         return application.getEndDate();

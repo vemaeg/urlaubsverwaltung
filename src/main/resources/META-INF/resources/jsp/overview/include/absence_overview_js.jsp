@@ -97,8 +97,9 @@
                                                     					}
                                                     	outputTable += "<th class = 'absenceOverview-title'>Resturlaub " + previousYear + "</th>";
                                                     	outputTable += "<th class = 'absenceOverview-value'>" + vacationLengthResponse.response.previousYearRemainingDays + "</th>";
-                                                    	outputTable += "<th class = 'absenceOverview-title'>Kranktage ohne</th>";
+                                                    	outputTable += "<th class = 'absenceOverview-title'>Kranktage</th>";
                                                     	outputTable += "<th class = 'absenceOverview-title'>Kranktage mit AUB</th>";
+                                                    	outputTable += "<th class = 'absenceOverview-title'>Kind krank</th>";
                                                     	outputTable += "</tr><tbody class='vacationOverview-tbody'>";
 
                     outputTable += "<tr>"
@@ -107,7 +108,7 @@
                     }
 
                     outputTable += "<td class = 'absenceOverview-label'>Urlaub " + selectedYearValue + "</td>";
-                    outputTable += "<td>" + vacationLengthResponse.response.vacationDaysAllowed + "</td><td></td><td></td></tr>"
+                    outputTable += "<td>" + vacationLengthResponse.response.vacationDaysAllowed + "</td><td></td><td></td><td></td></tr>"
 
                     outputTable += "<tr>"
                     for (i = 0; i <= 31; i++) {
@@ -115,7 +116,7 @@
                     }
 
                     outputTable += "<td class = 'absenceOverview-label'>Gesamt</td>";
-                    outputTable += "<td>" + thisYearTotalAllowedDays + "</td><td></td><td></td></tr>"
+                    outputTable += "<td>" + thisYearTotalAllowedDays + "</td><td></td><td></td><td></td></tr>"
 
 					for (var month in months) {
 					            outputTable += "<tr><td>" + month + "</td>"
@@ -148,6 +149,7 @@
                                     var sickDaysResponse = JSON.parse(xhttp.responseText);
                                     var monthlySickDays = sickDaysResponse.response.sickDays;
                                     var monthlySickDaysWithAub = sickDaysResponse.response.sickDaysWithAub;
+                                    var monthlyChildSickDays = sickDaysResponse.response.childSickDays;
 
 									days
 											.forEach(
@@ -275,6 +277,7 @@
                                     outputTable += "<td>" + vacationLengthResponse.response.vacationDays[month].allowedVacationDays + "</td>";
                                     outputTable += "<td>" + monthlySickDays + "</td>";
                                     outputTable += "<td>" + monthlySickDaysWithAub + "</td>";
+                                    outputTable += "<td>" + monthlyChildSickDays + "</td>";
 
 								}
 							};
@@ -324,7 +327,10 @@
                     outputTable += "<td></td>";
                     outputTable += "<td>" + totalVacationDays + "</td>";
                     outputTable += "<td>" + sickDaysResponse.response.sickDays + "</td>";
-                    outputTable += "<td>" + sickDaysResponse.response.sickDaysWithAub + "</td></tr>";
+                    outputTable += "<td>" + sickDaysResponse.response.sickDaysWithAub + "</td>";
+                    outputTable += "<td>" + sickDaysResponse.response.childSickDays + "</td></tr>";
+
+
 
 					outputTable += "<tr><td></td>"
                     for(i = 1; i <= 31; i++) {
@@ -334,7 +340,7 @@
                     var remainingDays = thisYearTotalAllowedDays - totalVacationDays;
                     outputTable += "<td class = 'absenceOverview-label'>Rest " + selectedYearValue + "</td>";
                     outputTable += "<td class = 'absenceOverview-value'>" + remainingDays + "</td>";
-                    outputTable += "<td></td><td></td>";
+                    outputTable += "<td></td><td></td><td></td>";
                     outputTable += "</tbody></table>";
 
                     var element = document.getElementById("vacationOverview");
