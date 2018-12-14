@@ -123,6 +123,10 @@
                                  <td class='vacationOverview-legend-text'><spring:message code="overview.vacationOverview.allowed" /></td>
                              </tr>
                              <tr>
+                                 <td class='vacationOverview-legend-colorbox vacationOverview-day-personal-other-holiday-status-ALLOWED'></td>
+                                 <td class='vacationOverview-legend-text'><spring:message code="overview.vacationOverview.other.allowed" /></td>
+                             </tr>
+                             <tr>
                                  <td class='vacationOverview-legend-colorbox vacationOverview-day-personal-holiday-status-WAITING'></td>
                                  <td class='vacationOverview-legend-text'><spring:message code="overview.vacationOverview.vacation" /></td>
                              </tr>

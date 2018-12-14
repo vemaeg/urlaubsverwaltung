@@ -18,6 +18,7 @@ public class DayAbsence {
     public enum Type {
 
         VACATION,
+        OTHER_VACATION,
         SICK_NOTE
     }
 

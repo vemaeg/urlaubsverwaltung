@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
+import org.synyx.urlaubsverwaltung.core.application.domain.VacationCategory;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.core.person.Person;
 import org.synyx.urlaubsverwaltung.core.person.PersonService;
@@ -135,8 +136,13 @@ public class AbsenceController {
 
             while (!day.isAfter(endDate)) {
                 if (!day.isBefore(start) && !day.isAfter(end)) {
-                    absences.add(new DayAbsence(day, application.getDayLength(), DayAbsence.Type.VACATION,
-                            application.getStatus().name(), application.getId()));
+                    if (application.getVacationType().isOfCategory(VacationCategory.HOLIDAY)) {
+                        absences.add(new DayAbsence(day, application.getDayLength(), DayAbsence.Type.VACATION,
+                                application.getStatus().name(), application.getId()));
+                    } else {
+                        absences.add(new DayAbsence(day, application.getDayLength(), DayAbsence.Type.OTHER_VACATION,
+                                application.getStatus().name(), application.getId()));
+                    }
                 }
 
                 day = day.plusDays(1);

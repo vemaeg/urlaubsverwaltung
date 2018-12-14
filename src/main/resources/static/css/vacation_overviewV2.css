@@ -44,6 +44,14 @@
     background: linear-gradient(-56deg, #FFC5BF 50%, #FFFFFF 50%) !important;
 }
 
+.vacationOverview-day-personal-other-holiday-status-ALLOWED {
+    background: linear-gradient(-56deg, #a5ffb1 50%, #a5ffb1 50%) !important;
+}
+
+.vacationOverview-day-personal-other-holiday-half-day-status-ALLOWED {
+    background: linear-gradient(-56deg, #a5ffb1 50%, #FFFFFF 50%) !important;
+}
+
 .vactionOverview-day-item {
     padding: 12px;
     cursor: default;

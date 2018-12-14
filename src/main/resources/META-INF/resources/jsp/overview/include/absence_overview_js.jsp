@@ -223,6 +223,39 @@
 															currentDay.cssClass = ' vacationOverview-day-personal-holiday-status-ALLOWED vactionOverview-day-item ';
 														}
 														if (response.response.absences
+                                                        		.find(
+                                                        				function(
+                                                        						currentValue,
+                                                        						index,
+                                                        						array) {
+                                                        					if (this.toString() == currentValue.date
+                                                        							&& currentValue.status === "ALLOWED"
+                                                        							&& currentValue.dayLength === 1
+                                                        							&& currentValue.type === "OTHER_VACATION") {
+                                                        						return "test";
+                                                        					}
+                                                        				},
+                                                        				currentDay.dayText)) {
+                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-status-ALLOWED vactionOverview-day-item ';
+                                                        }
+
+                                                        if (response.response.absences
+                                                        		.find(
+                                                        				function(
+                                                        						currentValue,
+                                                        						index,
+                                                        						array) {
+                                                        					if (this.toString() == currentValue.date
+                                                        							&& currentValue.status === "ALLOWED"
+                                                        							&& currentValue.dayLength < 1
+                                                        							&& currentValue.type === "OTHER_VACATION") {
+                                                        						return "test";
+                                                        					}
+                                                        				},
+                                                        				currentDay.dayText)) {
+                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-half-day-status-ALLOWED vactionOverview-day-item ';
+                                                        }
+														if (response.response.absences
 																.find(
 																		function(
 																				currentValue,

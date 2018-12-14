@@ -22,6 +22,8 @@ import org.synyx.urlaubsverwaltung.core.account.service.AccountService;
 import org.synyx.urlaubsverwaltung.core.account.service.VacationDaysService;
 import org.synyx.urlaubsverwaltung.core.application.domain.Application;
 import org.synyx.urlaubsverwaltung.core.application.domain.ApplicationStatus;
+import org.synyx.urlaubsverwaltung.core.application.domain.VacationCategory;
+import org.synyx.urlaubsverwaltung.core.application.domain.VacationType;
 import org.synyx.urlaubsverwaltung.core.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.core.department.DepartmentService;
 import org.synyx.urlaubsverwaltung.core.holiday.VacationDays;
@@ -162,11 +164,13 @@ public class VacationController {
             List<Application> applications = applicationService.getApplicationsForACertainPeriodAndPerson(startDate, endDate, person);
 
             for (Application application : applications) {
-                if (application.hasStatus(ApplicationStatus.WAITING)
-                        || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)) {
-                    waitingVacationDays = waitingVacationDays.add(getVacationDays(application, year, month));
-                } else if (application.hasStatus(ApplicationStatus.ALLOWED)) {
-                    allowedVacationDays = allowedVacationDays.add(getVacationDays(application, year, month));
+                if (application.getVacationType().isOfCategory(VacationCategory.HOLIDAY)) {
+                    if (application.hasStatus(ApplicationStatus.WAITING)
+                            || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED)) {
+                        waitingVacationDays = waitingVacationDays.add(getVacationDays(application, year, month));
+                    } else if (application.hasStatus(ApplicationStatus.ALLOWED)) {
+                        allowedVacationDays = allowedVacationDays.add(getVacationDays(application, year, month));
+                    }
                 }
             }
             vacationDays.put(month, new VacationDays(waitingVacationDays, allowedVacationDays));
