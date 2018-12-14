@@ -52,7 +52,7 @@ import java.util.Optional;
 /**
  * Controller to manage applications for leave.
  *
- * @author  Aljona Murygina - murygina@synyx.de
+ * @author Aljona Murygina - murygina@synyx.de
  */
 @RequestMapping("/web/application")
 @Controller
@@ -93,13 +93,13 @@ public class ApplicationForLeaveDetailsController {
 
     @RequestMapping(value = "/{applicationId}", method = RequestMethod.GET)
     public String showApplicationDetail(@PathVariable("applicationId") Integer applicationId,
-        @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) Integer requestedYear,
-        @RequestParam(value = "action", required = false) String action,
-        @RequestParam(value = "shortcut", required = false) boolean shortcut, Model model)
-        throws UnknownApplicationForLeaveException, AccessDeniedException {
+                                        @RequestParam(value = ControllerConstants.YEAR_ATTRIBUTE, required = false) Integer requestedYear,
+                                        @RequestParam(value = "action", required = false) String action,
+                                        @RequestParam(value = "shortcut", required = false) boolean shortcut, Model model)
+            throws UnknownApplicationForLeaveException, AccessDeniedException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         Person signedInUser = sessionService.getSignedInUser();
         Person person = application.getPerson();
@@ -131,9 +131,9 @@ public class ApplicationForLeaveDetailsController {
         Person signedInUser = sessionService.getSignedInUser();
 
         boolean isNotYetAllowed = application.hasStatus(ApplicationStatus.WAITING)
-            || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED);
+                || application.hasStatus(ApplicationStatus.TEMPORARY_ALLOWED);
         boolean isPrivilegedUser = signedInUser.hasRole(Role.BOSS) || signedInUser.hasRole(Role.DEPARTMENT_HEAD)
-            || signedInUser.hasRole(Role.SECOND_STAGE_AUTHORITY);
+                || signedInUser.hasRole(Role.SECOND_STAGE_AUTHORITY);
 
         if (isNotYetAllowed && isPrivilegedUser) {
             model.addAttribute("bosses", personService.getPersonsByRole(Role.BOSS));
@@ -153,8 +153,8 @@ public class ApplicationForLeaveDetailsController {
 
         // DEPARTMENT APPLICATIONS FOR LEAVE
         List<Application> departmentApplications =
-            departmentService.getApplicationsForLeaveOfMembersInDepartmentsOfPerson(application.getPerson(),
-                application.getStartDate(), application.getEndDate());
+                departmentService.getApplicationsForLeaveOfMembersInDepartmentsOfPerson(application.getPerson(),
+                        application.getStartDate(), application.getEndDate());
         model.addAttribute("departmentApplications", departmentApplications);
 
         // HOLIDAY ACCOUNT
@@ -179,21 +179,21 @@ public class ApplicationForLeaveDetailsController {
     @PreAuthorize(SecurityRules.IS_BOSS_OR_DEPARTMENT_HEAD_OR_SECOND_STAGE_AUTHORITY)
     @RequestMapping(value = "/{applicationId}/allow", method = RequestMethod.POST)
     public String allowApplication(@PathVariable("applicationId") Integer applicationId,
-        @ModelAttribute("comment") ApplicationCommentForm comment,
-        @RequestParam(value = "redirect", required = false) String redirectUrl, Errors errors,
-        RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException, AccessDeniedException {
+                                   @ModelAttribute("comment") ApplicationCommentForm comment,
+                                   @RequestParam(value = "redirect", required = false) String redirectUrl, Errors errors,
+                                   RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException, AccessDeniedException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         Person signedInUser = sessionService.getSignedInUser();
         Person person = application.getPerson();
 
         boolean isBoss = signedInUser.hasRole(Role.BOSS);
         boolean isDepartmentHead = signedInUser.hasRole(Role.DEPARTMENT_HEAD)
-            && departmentService.isDepartmentHeadOfPerson(signedInUser, person);
+                && departmentService.isDepartmentHeadOfPerson(signedInUser, person);
         boolean isSecondStageAuthority = signedInUser.hasRole(Role.SECOND_STAGE_AUTHORITY)
-            && departmentService.isSecondStageAuthorityOfPerson(signedInUser, person);
+                && departmentService.isSecondStageAuthorityOfPerson(signedInUser, person);
 
         if (!isBoss && !isDepartmentHead && !isSecondStageAuthority) {
             throw new AccessDeniedException(String.format(
@@ -234,15 +234,15 @@ public class ApplicationForLeaveDetailsController {
     @PreAuthorize(SecurityRules.IS_BOSS_OR_DEPARTMENT_HEAD)
     @RequestMapping(value = "/{applicationId}/refer", method = RequestMethod.POST)
     public String referApplication(@PathVariable("applicationId") Integer applicationId,
-        @ModelAttribute("referredPerson") ReferredPerson referredPerson, RedirectAttributes redirectAttributes)
-        throws UnknownApplicationForLeaveException, UnknownPersonException, AccessDeniedException {
+                                   @ModelAttribute("referredPerson") ReferredPerson referredPerson, RedirectAttributes redirectAttributes)
+            throws UnknownApplicationForLeaveException, UnknownPersonException, AccessDeniedException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         String referLoginName = referredPerson.getLoginName();
         Person recipient = personService.getPersonByLogin(referLoginName).orElseThrow(() ->
-                    new UnknownPersonException(referLoginName));
+                new UnknownPersonException(referLoginName));
 
         Person sender = sessionService.getSignedInUser();
 
@@ -269,12 +269,12 @@ public class ApplicationForLeaveDetailsController {
     @PreAuthorize(SecurityRules.IS_BOSS_OR_DEPARTMENT_HEAD_OR_SECOND_STAGE_AUTHORITY)
     @RequestMapping(value = "/{applicationId}/reject", method = RequestMethod.POST)
     public String rejectApplication(@PathVariable("applicationId") Integer applicationId,
-        @ModelAttribute("comment") ApplicationCommentForm comment,
-        @RequestParam(value = "redirect", required = false) String redirectUrl, Errors errors,
-        RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException, AccessDeniedException {
+                                    @ModelAttribute("comment") ApplicationCommentForm comment,
+                                    @RequestParam(value = "redirect", required = false) String redirectUrl, Errors errors,
+                                    RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException, AccessDeniedException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         Person person = application.getPerson();
         Person signedInUser = sessionService.getSignedInUser();
@@ -319,17 +319,19 @@ public class ApplicationForLeaveDetailsController {
      */
     @RequestMapping(value = "/{applicationId}/cancel", method = RequestMethod.POST)
     public String cancelApplication(@PathVariable("applicationId") Integer applicationId,
-        @ModelAttribute("comment") ApplicationCommentForm comment, Errors errors, RedirectAttributes redirectAttributes)
-        throws UnknownApplicationForLeaveException, AccessDeniedException {
+                                    @ModelAttribute("comment") ApplicationCommentForm comment, Errors errors, RedirectAttributes redirectAttributes)
+            throws UnknownApplicationForLeaveException, AccessDeniedException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         Person signedInUser = sessionService.getSignedInUser();
 
         boolean isWaiting = application.hasStatus(ApplicationStatus.WAITING);
         boolean isAllowed = application.hasStatus(ApplicationStatus.ALLOWED);
         boolean isTemporaryAllowed = application.hasStatus((ApplicationStatus.TEMPORARY_ALLOWED));
+        boolean isPrivilegedUser = signedInUser.hasRole(Role.OFFICE) || departmentService.isDepartmentHeadOfPerson(signedInUser, application.getPerson())
+                || departmentService.isSecondStageAuthorityOfPerson(signedInUser, application.getPerson());
 
         // security check: only two cases where cancelling is possible
         // 1: user can cancel her own applications for leave if it has not been allowed yet
@@ -338,10 +340,10 @@ public class ApplicationForLeaveDetailsController {
         if (signedInUser.equals(application.getPerson())) {
             // user can cancel only her own waiting applications, so the comment is NOT mandatory
             comment.setMandatory(false);
-        } else if (signedInUser.hasRole(Role.OFFICE) && (isWaiting || isAllowed || isTemporaryAllowed)) {
+        } else if (isPrivilegedUser && (isWaiting || isAllowed || isTemporaryAllowed)) {
             // office cancels application of other users, state can be waiting or allowed, so the comment is mandatory
             comment.setMandatory(true);
-        } else {
+        } else{
             throw new AccessDeniedException(String.format(
                     "User '%s' has not the correct permissions to cancel application for leave of user '%s'",
                     signedInUser.getLoginName(), application.getPerson().getLoginName()));
@@ -366,10 +368,10 @@ public class ApplicationForLeaveDetailsController {
      */
     @RequestMapping(value = "/{applicationId}/remind", method = RequestMethod.POST)
     public String remindBoss(@PathVariable("applicationId") Integer applicationId,
-        RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException {
+                             RedirectAttributes redirectAttributes) throws UnknownApplicationForLeaveException {
 
         Application application = applicationService.getApplicationById(applicationId).orElseThrow(() ->
-                    new UnknownApplicationForLeaveException(applicationId));
+                new UnknownApplicationForLeaveException(applicationId));
 
         try {
             applicationInteractionService.remind(application);
