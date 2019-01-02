@@ -16,6 +16,7 @@ import org.synyx.urlaubsverwaltung.core.person.PersonService;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNote;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteCategory;
 import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteService;
+import org.synyx.urlaubsverwaltung.core.sicknote.SickNoteStatus;
 import org.synyx.urlaubsverwaltung.core.util.DateUtil;
 import org.synyx.urlaubsverwaltung.core.workingtime.WorkDaysService;
 import org.synyx.urlaubsverwaltung.restapi.ResponseWrapper;
@@ -79,6 +80,10 @@ public class SickDaysController {
         List<SickNote> sickNotes = sickNoteService.getByPersonAndPeriod(person, startDate, endDate);
 
         for(SickNote sickNote: sickNotes) {
+            if (sickNote.getStatus() == SickNoteStatus.CANCELLED) {
+                continue;
+            }
+
             DateMidnight relevantAubStartDate;
             DateMidnight relevantAubEndDate;
 
