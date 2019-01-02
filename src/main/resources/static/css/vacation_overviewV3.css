@@ -16,6 +16,8 @@
 
 .vacationOverview-legend-colorbox {
     width: 15px;
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
 }
 
 .vacationOverview-legend-text {
@@ -56,6 +58,8 @@
     padding: 12px;
     cursor: default;
     color: #6F6F6F;
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
 }
 
 .list-table th {
