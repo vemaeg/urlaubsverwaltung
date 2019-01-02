@@ -97,6 +97,24 @@ class RecipientService {
         return concat(bosses, responsibleDepartmentHeads);
     }
 
+    /**
+     * Get recipients for the cancelation request of a given application.
+     *
+     * @param  application  to find out recipients for
+     *
+     * @return  list of recipients for the given application allow/remind request
+     */
+    List<Person> getRecipientsForCancelationRequest(Application application) {
+
+        Person applicationPerson = application.getPerson();
+
+        List<Person> secondStageAuthorities = getResponsibleSecondStageAuthorities(applicationPerson);
+        List<Person> responsibleDepartmentHeads = getResponsibleDepartmentHeads(applicationPerson);
+        List<Person> office = getRecipientsWithNotificationType(MailNotification.NOTIFICATION_OFFICE);
+
+        return concat(office, secondStageAuthorities, responsibleDepartmentHeads);
+    }
+
     private static List<Person> concat(List<Person> list1, List<Person> list2) {
         return Stream.concat(list1.stream(), list2.stream()).collect(Collectors.toList());
     }

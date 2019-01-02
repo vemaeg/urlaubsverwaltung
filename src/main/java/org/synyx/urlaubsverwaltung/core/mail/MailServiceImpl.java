@@ -409,7 +409,7 @@ class MailServiceImpl implements MailService {
 
         mailSender.sendEmail(mailSettings,
             RecipientUtil.getMailAddresses(
-                recipientService.getRecipientsForAllowAndRemind(application)),
+                recipientService.getRecipientsForCancelationRequest(application)),
             getTranslation("subject.application.cancellationRequest"), text);
     }
 
