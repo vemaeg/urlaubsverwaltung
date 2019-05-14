@@ -12,6 +12,7 @@ public class I18NConfig {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
+        messageSource.setFallbackToSystemLocale(false);
         messageSource.setCacheSeconds(10);
         return messageSource;
     }

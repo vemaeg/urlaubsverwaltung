@@ -364,7 +364,7 @@ class MailServiceImpl implements MailService {
 
         mailSender.sendEmail(mailSettings,
             RecipientUtil.getMailAddresses(
-                recipientService.getRecipientsWithNotificationType(MailNotification.NOTIFICATION_OFFICE)),
+                recipientService.getRecipientsForCancelationRequest(application)),
             getTranslation("subject.application.cancellationRequest"), text);
     }
 

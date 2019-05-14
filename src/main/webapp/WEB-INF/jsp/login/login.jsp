@@ -62,6 +62,9 @@
                         </button>
                     </div>
 
+                    <div class="form-group">
+                        <a href="https://urlaubpwd.vemaeg.de/index.php">Passwort ändern</a> <a class="pull-right" href="https://urlaubpwd.vemaeg.de/index.php?action=sendtoken">Passwort vergessen</a>
+                    </div>
                 </form>
 
             </div>
@@ -76,7 +79,7 @@
 <footer>
     <div class="row">
         <div class="col-xs-12">
-            <p><spring:message code="header.title"/> v${version} powered by <a href="https://synyx.de/">synyx</a></p>
+            <p><spring:message code="header.title"/> v${version}</p>
         </div>
     </div>
 </footer>

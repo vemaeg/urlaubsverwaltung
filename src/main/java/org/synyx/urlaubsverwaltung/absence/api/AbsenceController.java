@@ -12,6 +12,7 @@ import org.synyx.urlaubsverwaltung.api.ResponseWrapper;
 import org.synyx.urlaubsverwaltung.api.RestApiDateFormat;
 import org.synyx.urlaubsverwaltung.application.domain.Application;
 import org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus;
+import org.synyx.urlaubsverwaltung.application.domain.VacationCategory;
 import org.synyx.urlaubsverwaltung.application.service.ApplicationService;
 import org.synyx.urlaubsverwaltung.person.Person;
 import org.synyx.urlaubsverwaltung.person.PersonService;
@@ -21,6 +22,7 @@ import org.synyx.urlaubsverwaltung.util.DateUtil;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -134,8 +136,13 @@ public class AbsenceController {
 
             while (!day.isAfter(endDate)) {
                 if (!day.isBefore(start) && !day.isAfter(end)) {
-                    absences.add(new DayAbsence(day, application.getDayLength().getDuration(), application.getDayLength().toString(), DayAbsence.Type.VACATION,
-                            application.getStatus().name(), application.getId()));
+                    if (application.getVacationType().isOfCategory(VacationCategory.HOLIDAY)) {
+                        absences.add(new DayAbsence(day, application.getDayLength().getDuration(), application.getDayLength().toString(), DayAbsence.Type.VACATION,
+                                application.getStatus().name(), application.getId()));
+                    } else {
+                        absences.add(new DayAbsence(day, application.getDayLength().getDuration(), application.getDayLength().toString(), DayAbsence.Type.OTHER_VACATION,
+                                application.getStatus().name(), application.getId()));
+                    }
                 }
 
                 day = day.plusDays(1);

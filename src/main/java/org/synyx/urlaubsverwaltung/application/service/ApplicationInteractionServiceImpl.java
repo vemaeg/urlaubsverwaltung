@@ -313,11 +313,13 @@ public class ApplicationInteractionServiceImpl implements ApplicationInteraction
 
     private Application cancelApplication(Application application, Person canceller, Optional<String> comment) {
 
+        boolean isPrivilegedUser = canceller.hasRole(Role.OFFICE) || departmentService.isDepartmentHeadOfPerson(canceller, application.getPerson())
+                || departmentService.isSecondStageAuthorityOfPerson(canceller, application.getPerson());
         /*
          * Only Office can cancel allowed applications for leave directly,
          * users have to request cancellation
          */
-        if (canceller.hasRole(Role.OFFICE)) {
+        if (isPrivilegedUser) {
             application.setStatus(ApplicationStatus.CANCELLED);
 
             applicationService.save(application);

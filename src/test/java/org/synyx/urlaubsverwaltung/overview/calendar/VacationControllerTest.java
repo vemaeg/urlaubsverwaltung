@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.synyx.urlaubsverwaltung.account.service.AccountService;
+import org.synyx.urlaubsverwaltung.account.service.VacationDaysService;
 import org.synyx.urlaubsverwaltung.application.domain.Application;
 import org.synyx.urlaubsverwaltung.application.domain.ApplicationStatus;
 import org.synyx.urlaubsverwaltung.application.service.ApplicationService;
@@ -13,6 +15,7 @@ import org.synyx.urlaubsverwaltung.person.Person;
 import org.synyx.urlaubsverwaltung.person.PersonService;
 import org.synyx.urlaubsverwaltung.api.ApiExceptionHandlerControllerAdvice;
 import org.synyx.urlaubsverwaltung.testdatacreator.TestDataCreator;
+import org.synyx.urlaubsverwaltung.workingtime.WorkDaysService;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -39,6 +42,9 @@ public class VacationControllerTest {
     private PersonService personServiceMock;
     private ApplicationService applicationServiceMock;
     private DepartmentService departmentServiceMock;
+    private AccountService accountService;
+    private VacationDaysService vacationDaysService;
+    private WorkDaysService workDaysService;
 
     @Before
     public void setUp() {
@@ -46,9 +52,12 @@ public class VacationControllerTest {
         personServiceMock = mock(PersonService.class);
         applicationServiceMock = mock(ApplicationService.class);
         departmentServiceMock = mock(DepartmentService.class);
+        accountService = mock(AccountService.class);
+        vacationDaysService = mock(VacationDaysService.class);
+        workDaysService = mock(WorkDaysService.class);
 
         mockMvc = MockMvcBuilders.standaloneSetup(new VacationController(personServiceMock, applicationServiceMock,
-                        departmentServiceMock)).setControllerAdvice(new ApiExceptionHandlerControllerAdvice()).build();
+                        departmentServiceMock, accountService, vacationDaysService, workDaysService)).setControllerAdvice(new ApiExceptionHandlerControllerAdvice()).build();
     }
 
 

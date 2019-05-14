@@ -164,21 +164,6 @@
     </tr>
     <tr>
         <td>
-            <spring:message code="application.data.furtherInformation.address"/>
-        </td>
-        <td>
-            <c:choose>
-                <c:when test="${application.address!= null && !empty application.address}">
-                    <c:out value="${application.address}"/>
-                </c:when>
-                <c:otherwise>
-                    <spring:message code="application.data.furtherInformation.notSpecified"/>
-                </c:otherwise>
-            </c:choose>
-        </td>
-    </tr>
-    <tr>
-        <td>
             <spring:message code='application.data.teamInformed'/>
         </td>
         <td>

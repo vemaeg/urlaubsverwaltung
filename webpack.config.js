@@ -32,6 +32,7 @@ module.exports = {
     settings_form: './src/main/webapp/bundles/settings-form.js',
     account_form: './src/main/webapp/bundles/account-form.js',
     workingtime_form: './src/main/webapp/bundles/workingtime-form.js',
+    absence_overview: './src/main/webapp/bundles/absence_overview.js',
   },
 
   output: {

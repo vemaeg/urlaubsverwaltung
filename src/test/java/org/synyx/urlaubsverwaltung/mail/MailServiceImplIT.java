@@ -71,7 +71,7 @@ public class MailServiceImplIT {
 
         try {
             Properties messageProperties = new Properties();
-            messageProperties.load(new ClassPathResource("messages_de.properties").getInputStream());
+            messageProperties.load(new ClassPathResource("messages.properties").getInputStream());
 
             Map<String, String> messages = messageProperties.entrySet().stream()
                 .collect(toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));

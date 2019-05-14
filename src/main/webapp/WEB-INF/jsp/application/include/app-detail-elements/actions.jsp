@@ -10,12 +10,25 @@
     <c:set var="IS_USER" value="${true}"/>
 </sec:authorize>
 
+<sec:authorize access="hasAuthority('BOSS')">
+  <c:set var="IS_BOSS" value="${true}"/>
+</sec:authorize>
+
+<sec:authorize access="hasAuthority('DEPARTMENT_HEAD')">
+  <c:set var="IS_DEPARTMENT_HEAD" value="${true}"/>
+</sec:authorize>
+
+<sec:authorize access="hasAuthority('SECOND_STAGE_AUTHORITY')">
+  <c:set var="IS_SECOND_STAGE_AUTHORITY" value="${true}"/>
+</sec:authorize>
+
 <sec:authorize access="hasAuthority('OFFICE')">
     <c:set var="IS_OFFICE" value="${true}"/>
 </sec:authorize>
 
-<c:if
-    test="${application.status == 'WAITING' || application.status == 'ALLOWED' || application.status == 'TEMPORARY_ALLOWED' }">
+<c:set var="CAN_CANCEL" value="${IS_BOSS || IS_DEPARTMENT_HEAD || IS_SECOND_STAGE_AUTHORITY}"/>
+
+<c:if test="${application.status == 'WAITING' || application.status == 'ALLOWED' || application.status == 'TEMPORARY_ALLOWED' }">
 
     <c:if test="${application.status == 'WAITING'}">
         <sec:authorize access="hasAuthority('USER')">
@@ -40,7 +53,7 @@
     </c:if>
 
     <c:if test="${application.status == 'ALLOWED' || application.status == 'TEMPORARY_ALLOWED'}">
-        <c:if test="${IS_OFFICE || (IS_USER && application.person.id == signedInUser.id)}">
+        <c:if test="${CAN_CANCEL || (IS_USER && application.person.id == signedInUser.id)}">
             <jsp:include page="actions/cancel_form.jsp"/>
         </c:if>
     </c:if>
