@@ -47,7 +47,7 @@
                     </c:if>
 
                     <div class="form-group">
-                        <label for="username"><spring:message code="login.form.username"/></label>
+                        <label for="username"><spring:message code="login.form.username"/> (vorname.nachname)</label>
                         <input class="form-control" type="text" name="username" id="username" autofocus="autofocus">
                     </div>
 
@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="form-group">
-                        <a href="https://urlaubpwd.vemaeg.de/index.php">Passwort ändern</a> <a class="pull-right" href="https://urlaubpwd.vemaeg.de/index.php?action=sendtoken">Passwort vergessen</a>
+                        <a href="https://ldappwd.vemaeg.de/index.php">Passwort ändern</a> <a class="pull-right" href="https://ldappwd.vemaeg.de/index.php?action=sendtoken">Passwort vergessen</a>
                     </div>
                 </form>
 
