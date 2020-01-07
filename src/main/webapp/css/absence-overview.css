@@ -53,7 +53,7 @@
   background: #FFC5BF !important;
 }
 
-..vacationOverview-day-sick-note-half-day {
+.vacationOverview-day-sick-note-half-day {
      background: linear-gradient(-56deg, #FFC5BF 50%, #FFFFFF 50%) !important;
 }
 
