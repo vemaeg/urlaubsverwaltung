@@ -213,11 +213,11 @@ public class ExchangeCalendarProvider implements CalendarProvider {
 
         appointment.setSubject(absence.getEventSubject());
 
-        OlsonTimeZoneDefinition timeZone = new OlsonTimeZoneDefinition(TimeZone.getTimeZone(exchangeTimeZoneId));
+        OlsonTimeZoneDefinition timeZone = new OlsonTimeZoneDefinition(TimeZone.getTimeZone("UTC"));
 
         appointment.setStart(Date.from(absence.getStartDate().toInstant()));
         appointment.setStartTimeZone(timeZone);
-        appointment.setEnd(Date.from(absence.getEndDate().toInstant()));
+        appointment.setEnd(Date.from(absence.getEndDate().minusMinutes(1).toInstant()));
         appointment.setEndTimeZone(timeZone);
 
         appointment.setIsAllDayEvent(absence.isAllDay());
