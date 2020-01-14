@@ -29,7 +29,9 @@ import org.synyx.urlaubsverwaltung.settings.CalendarSettings;
 import org.synyx.urlaubsverwaltung.settings.ExchangeCalendarSettings;
 
 import java.net.URI;
-import java.sql.Date;
+import java.time.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -213,11 +215,28 @@ public class ExchangeCalendarProvider implements CalendarProvider {
 
         appointment.setSubject(absence.getEventSubject());
 
-        OlsonTimeZoneDefinition timeZone = new OlsonTimeZoneDefinition(TimeZone.getTimeZone("UTC"));
+        OlsonTimeZoneDefinition timeZone = new OlsonTimeZoneDefinition(TimeZone.getTimeZone(exchangeTimeZoneId));
 
-        appointment.setStart(Date.from(absence.getStartDate().toInstant()));
+        int startHour = 0;
+        int endHour = 0;
+
+        switch (absence.getPeriod().getDayLength()) {
+            case MORNING:
+                startHour = 8;
+                endHour = 12;
+                break;
+            case NOON:
+                startHour = 12;
+                endHour = 16;
+                break;
+        }
+
+        LocalDateTime startDate = LocalDateTime.of(absence.getStartDate().getYear(), absence.getStartDate().getMonth(), absence.getStartDate().getDayOfMonth(), startHour, 0);
+        LocalDateTime endDate = LocalDateTime.of(absence.getEndDate().getYear(), absence.getEndDate().getMonth(), absence.getEndDate().getDayOfMonth(), endHour, 0);
+
+        appointment.setStart(Date.from(startDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(Instant.now()))));
         appointment.setStartTimeZone(timeZone);
-        appointment.setEnd(Date.from(absence.getEndDate().minusMinutes(1).toInstant()));
+        appointment.setEnd(Date.from(endDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(Instant.now()))));
         appointment.setEndTimeZone(timeZone);
 
         appointment.setIsAllDayEvent(absence.isAllDay());

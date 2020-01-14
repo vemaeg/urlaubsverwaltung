@@ -21,6 +21,7 @@ public class Absence {
     private final Person person;
     private final EventType eventType;
     private final boolean isAllDay;
+    private final Period period;
 
     public Absence(Person person, Period period, EventType eventType,
         AbsenceTimeConfiguration absenceTimeConfiguration) {
@@ -32,6 +33,7 @@ public class Absence {
 
         this.person = person;
         this.eventType = eventType;
+        this.period = period;
 
         ZonedDateTime periodStartDate = period.getStartDate().atStartOfDay(UTC);
         ZonedDateTime periodEndDate = period.getEndDate().atStartOfDay(UTC);
@@ -87,6 +89,12 @@ public class Absence {
     public boolean isAllDay() {
 
         return isAllDay;
+    }
+
+
+    public Period getPeriod() {
+
+        return period;
     }
 
 
