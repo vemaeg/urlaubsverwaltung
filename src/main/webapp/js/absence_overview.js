@@ -90,7 +90,7 @@
 					var outputTable = "<table id ='absenceOverviewTable' cellspacing='0' class='list-table sortable tablesorter absenceOverview-table'>";
                                                     	outputTable += "<tr><th class='absenceOverview-title'>Tag/Monat</th>";
                                                     	for(i = 1; i <= 31; i++) {
-                                                    	            outputTable += "<th class='vactionOverview-day-item'>"
+                                                    	            outputTable += "<th class='vacationOverview-day-item'>"
                                                     									+ i + "</th>";
                                                     					}
                                                     	outputTable += "<th class = 'absenceOverview-title'>Resturlaub " + previousYear + "</th>";
@@ -167,7 +167,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = 'vacationOverview-day-personal-holiday-status-WAITING vactionOverview-day-item ';
+															currentDay.cssClass = 'vacationOverview-day-personal-holiday-status-WAITING vacationOverview-day-item ';
 														}
 														if (response.response.absences
 																.find(
@@ -183,7 +183,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-WAITING vactionOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-WAITING vacationOverview-day-item ';
 														}
 
 														if (response.response.absences
@@ -201,7 +201,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-ALLOWED vactionOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-ALLOWED vacationOverview-day-item ';
 														}
 														if (response.response.absences
 																.find(
@@ -218,7 +218,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-personal-holiday-status-ALLOWED vactionOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-personal-holiday-status-ALLOWED vacationOverview-day-item ';
 														}
 														if (response.response.absences
                                                         		.find(
@@ -234,7 +234,7 @@
                                                         					}
                                                         				},
                                                         				currentDay.dayText)) {
-                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-status-ALLOWED vactionOverview-day-item ';
+                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-status-ALLOWED vacationOverview-day-item ';
                                                         }
 
                                                         if (response.response.absences
@@ -251,7 +251,7 @@
                                                         					}
                                                         				},
                                                         				currentDay.dayText)) {
-                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-half-day-status-ALLOWED vactionOverview-day-item ';
+                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-half-day-status-ALLOWED vacationOverview-day-item ';
                                                         }
 														if (response.response.absences
 																.find(
@@ -266,7 +266,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-sick-note vactionOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-sick-note vacationOverview-day-item ';
 														}
 														if (response.response.absences
 																.find(
@@ -281,7 +281,7 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-sick-note-half-day vactionOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-sick-note-half-day vacationOverview-day-item ';
 														}
 													}, this);
 									days
@@ -290,15 +290,15 @@
                                             				dayIndex,
                                             				dayArray) {
                                             			if (dayItem.typeOfDay === null) {
-                                            			    dayItem.cssClass = ' vacationOverview-day-not-in-month vactionOverview-day-item';
+                                            			    dayItem.cssClass = ' vacationOverview-day-not-in-month vacationOverview-day-item';
                                             			}
 
                                             			else if (dayItem.typeOfDay === "WEEKEND") {
-                                            				dayItem.cssClass = ' vacationOverview-day-weekend vactionOverview-day-item';
+                                            				dayItem.cssClass = ' vacationOverview-day-weekend vacationOverview-day-item';
                                             			} else {
                                             				if (!dayItem.cssClass)
                                             				{
-                                            					dayItem.cssClass = ' vacationOverview-day vactionOverview-day-item ';
+                                            					dayItem.cssClass = ' vacationOverview-day vacationOverview-day-item ';
                                             				};
                                             			};
                                             			outputTable += "<td class='" + dayItem.cssClass + "'></td>";
@@ -325,11 +325,11 @@
 																dayIndex,
 																dayArray) {
 															if (dayItem.typeOfDay === "WEEKEND") {
-																dayItem.cssClass = ' vacationOverview-day-weekend vactionOverview-day-item';
+																dayItem.cssClass = ' vacationOverview-day-weekend vacationOverview-day-item';
 															} else {
 																if (!dayItem.cssClass)
 																{
-																	dayItem.cssClass = ' vacationOverview-day vactionOverview-day-item ';
+																	dayItem.cssClass = ' vacationOverview-day vacationOverview-day-item ';
 																};
 															};
 															outputTable += "<td class='" + dayItem.cssClass + "'></td>";
