@@ -85,7 +85,7 @@
 					var months = holyDayOverviewResponse.response.absenceOverview.months;
 					var personId = holyDayOverviewResponse.response.absenceOverview.personID;
 					var previousYear = parseInt(selectedYearValue) - 1;
-					var thisYearTotalAllowedDays = parseInt(vacationLengthResponse.response.previousYearRemainingDays) + parseInt(vacationLengthResponse.response.vacationDaysAllowed);
+					var thisYearTotalAllowedDays = parseFloat(vacationLengthResponse.response.previousYearRemainingDays) + parseFloat(vacationLengthResponse.response.vacationDaysAllowed);
 
 					var outputTable = "<table id ='absenceOverviewTable' cellspacing='0' class='list-table sortable tablesorter absenceOverview-table'>";
                                                     	outputTable += "<tr><th class='absenceOverview-title'>Tag/Monat</th>";
