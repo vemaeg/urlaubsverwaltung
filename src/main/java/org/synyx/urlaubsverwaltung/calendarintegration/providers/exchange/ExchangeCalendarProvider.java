@@ -234,9 +234,9 @@ public class ExchangeCalendarProvider implements CalendarProvider {
         LocalDateTime startDate = LocalDateTime.of(absence.getStartDate().getYear(), absence.getStartDate().getMonth(), absence.getStartDate().getDayOfMonth(), startHour, 0);
         LocalDateTime endDate = LocalDateTime.of(absence.getEndDate().getYear(), absence.getEndDate().getMonth(), absence.getEndDate().getDayOfMonth(), endHour, 0);
 
-        appointment.setStart(Date.from(startDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(Instant.now()))));
+        appointment.setStart(Date.from(startDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(startDate))));
         appointment.setStartTimeZone(timeZone);
-        appointment.setEnd(Date.from(endDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(Instant.now()))));
+        appointment.setEnd(Date.from(endDate.toInstant(ZoneId.of(exchangeTimeZoneId).getRules().getOffset(endDate))));
         appointment.setEndTimeZone(timeZone);
 
         appointment.setIsAllDayEvent(absence.isAllDay());
