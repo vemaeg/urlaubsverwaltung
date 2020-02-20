@@ -183,7 +183,8 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-WAITING vacationOverview-day-item ';
+															currentDay.cssClass = 'vacationOverview-day-personal-holiday-status-WAITING vacationOverview-day-item ';
+															currentDay.html = '1/2';
 														}
 
 														if (response.response.absences
@@ -201,7 +202,8 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-personal-holiday-half-day-status-ALLOWED vacationOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-personal-holiday-status-ALLOWED vacationOverview-day-item ';
+															currentDay.html = '1/2';
 														}
 														if (response.response.absences
 																.find(
@@ -251,7 +253,8 @@
                                                         					}
                                                         				},
                                                         				currentDay.dayText)) {
-                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-half-day-status-ALLOWED vacationOverview-day-item ';
+                                                        	currentDay.cssClass = ' vacationOverview-day-personal-other-holiday-status-ALLOWED vacationOverview-day-item ';
+                                                        	currentDay.html = '1/2';
                                                         }
 														if (response.response.absences
 																.find(
@@ -281,7 +284,8 @@
 																			}
 																		},
 																		currentDay.dayText)) {
-															currentDay.cssClass = ' vacationOverview-day-sick-note-half-day vacationOverview-day-item ';
+															currentDay.cssClass = ' vacationOverview-day-sick-note vacationOverview-day-item ';
+															currentDay.html = '1/2';
 														}
 													}, this);
 									days
@@ -301,7 +305,10 @@
                                             					dayItem.cssClass = ' vacationOverview-day vacationOverview-day-item ';
                                             				};
                                             			};
-                                            			outputTable += "<td class='" + dayItem.cssClass + "'></td>";
+                                            			if (dayItem.html === undefined) {
+                                            			    dayItem.html = '';
+                                            			}
+                                            			outputTable += "<td class='" + dayItem.cssClass + "'>" + dayItem.html + "</td>";
                                             		}, outputTable);
                                     totalVacationDays += vacationLengthResponse.response.vacationDays[month].allowedVacationDays;
                                     outputTable += "<td></td>";
